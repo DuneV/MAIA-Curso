@@ -15,15 +15,21 @@ class esp32Communication:
     def close(self):
         self.esp32.close()
 
-def file_treat(data_recieve):
-    data = np.array(data_recieve)
+def file_treat(data_receive):
+    data = np.array(data_receive)
+    
+    # Asegurar que el tamaño total sea un múltiplo de 7
+    remainder = len(data) % 7
+    if remainder != 0:
+        data = data[:-remainder]  # Eliminar los elementos extra
+    
     data_div = np.char.split(data, sep=';')
     data_div = np.concatenate(data_div)
-    data_div = np.delete(data_div, 0)
     data_div = data_div.reshape((-1 , 7)).astype(float)
-    colunms_name = ['Accel x (m/s^2)','Accel y (m/s^2)','Accel z (m/s^2)','w_x (rad/s)','w_y (rad/s)','w_z (rad/s)','Temp (°C)']
-    df = pd.DataFrame(data_div, columns=colunms_name)
+    col_names = ['Accel x (m/s^2)', 'Accel y (m/s^2)', 'Accel z (m/s^2)', 'w_x (rad/s)', 'w_y (rad/s)', 'w_z (rad/s)', 'Temp (°C)']
+    df = pd.DataFrame(data_div, columns=col_names)
     return df
+
 
 if __name__ == "__main__":
     esp32_comm = esp32Communication()
