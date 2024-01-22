@@ -11,7 +11,7 @@ _Para ejecutar la mayoría de los scripts, es necesario tenerlos en un entorno E
 Necesario:
 
 - [Python 3.8](https://www.python.org/downloads/)
-- [Ubuntu 22.04](https://releases.ubuntu.com/22.04/)
+- [Ubuntu 22.04](https://releases.ubuntu.com/22.04) o Windows 10
 - [ESP-IDF](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/)
 - [TensorFlow](https://www.tensorflow.org/install)
 - [XXD](https://linux.die.net/man/1/xxd)
@@ -31,17 +31,13 @@ sudo pip install tensorflow
 sudo apt-get install xxd
 
 
-_Paso uno, clona el repositorio en una carpeta de tu elección._
-
-_Busca la carpeta que desees y ejecuta el siguiente comando en la terminal_
-
-
 ### Ejecución en ESP32 ⌨️
 
 1. Abre el editor de código preferido con la extensión PlatformIO.
-2. Abre el archivo como un nuevo proyecto en el espacio de trabajo.
+2. Abre el archivo como un nuevo proyecto en el espacio de trabajo (Utilizando el Framwork de Arduin).
 3. Sube el proyecto al ESP32.
 4. Ejecuta los scripts y observa la conexión con el ESP32.
+5. Una vez verificada esta conexión y el funcionamiento de su tarjeta ESP32, remitase a la carpeta de ***Resources*** y siga los respectivos pasos del curso.
 
 ## Licencia 📄
 
