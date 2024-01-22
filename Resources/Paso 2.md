@@ -1,4 +1,4 @@
-﻿# Bienvenidos a TensorFlow Lite
+# Bienvenidos a TensorFlow Lite
 En este modulo nos centraremos en la evaluación de un modelo basico en TensorFlow Lite, para realizar este simplemente clonaremos la libreria [Tensor Flow Lite Arduino](https://github.com/tensorflow/tflite-micro-arduino-examples/tree/main). Una vez agregada esta en el espacio de **libs deps** de PlatformIO como se ve a continuación (ignorando el board_build.partitions), ajuste de igual forma el monitor_speed a 115200:
 ### En caso de que no sea compatible tfmicro, utilice:
 ```
