@@ -1,10 +1,10 @@
-# Bienvenidos a TensorFlow Lite
-En este modulo nos centraremos en la evaluación de un modelo basico en TensorFlow Lite, para realizar este simplemente clonaremos la libreria [Tensor Flow Lite Arduino](https://github.com/tensorflow/tflite-micro-arduino-examples/tree/main). Una vez agregada esta en el espacio de **libs deps** de PlatformIO como se ve a continuación (ignorando el board_build.partitions), ajuste de igual forma el monitor_speed a 115200:
+# TensorFlow Lite
+Una vez desarrollado el modelo, en este modulo nos centraremos en la evaluación de este en el entorno de TensorFlow Lite, para realizar esto simplemente clonaremos la libreria [Tensor Flow Lite Arduino](https://github.com/tensorflow/tflite-micro-arduino-examples/tree/main). Una vez agregada esta en el espacio de **libs deps** de PlatformIO como se ve a continuación (ignorando el board_build.partitions), ajuste de igual forma el monitor_speed a 115200:
 ### En caso de que no sea compatible tfmicro, utilice:
 ```
 lib_deps = tanakamasayuki/TensorFlowLite_ESP32@^1.0.0
 ```
-![enter image description here](https://hackster.imgix.net/uploads/attachments/1035509/image_xw9FmVMM7x.png?auto=compress,format&w=740&h=555&fit=max)
+![imagen ilustrativa de archivo .ini](https://hackster.imgix.net/uploads/attachments/1035509/image_xw9FmVMM7x.png?auto=compress,format&w=740&h=555&fit=max)
 # Ejemplos
 
 Una vez compilado el proyecto se tomaran los archivos correspondientes a la carpeta /.pio/libdeps, donde se encontrara con la carpeta "hello_world". Copie los elementos del hello_world.ino a su carpeta raiz /src, a su archivo main.cpp. 
