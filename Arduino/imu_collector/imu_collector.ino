@@ -24,7 +24,7 @@ void setup(void) {
   mpu.setGyroRange(MPU6050_RANGE_500_DEG);
 
   // Configurar el ancho de banda del filtro a 5 Hz
-  mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
+  // mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
 
   // Esperar un breve tiempo para que el sensor se estabilice
   delay(100);
