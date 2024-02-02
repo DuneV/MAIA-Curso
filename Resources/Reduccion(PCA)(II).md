@@ -1,43 +1,64 @@
-# TensorFlow Lite
-Una vez desarrollado el modelo, en este modulo nos centraremos en la evaluación de este en el entorno de TensorFlow Lite, para realizar esto simplemente clonaremos la libreria [Tensor Flow Lite Arduino](https://github.com/tensorflow/tflite-micro-arduino-examples/tree/main). Una vez agregada esta en el espacio de **libs deps** de PlatformIO como se ve a continuación (ignorando el board_build.partitions), ajuste de igual forma el monitor_speed a 115200:
-### En caso de que no sea compatible tfmicro, utilice:
-```
-lib_deps = tanakamasayuki/TensorFlowLite_ESP32@^1.0.0
-```
-![imagen ilustrativa de archivo .ini](https://hackster.imgix.net/uploads/attachments/1035509/image_xw9FmVMM7x.png?auto=compress,format&w=740&h=555&fit=max)
-# Ejemplos
+# PCA
+La reducción de dimensionalidad es una técnica común en proyectos de aprendizaje automático, eliminando información no crucial para acelerar el entrenamiento y mejorar la clasificación. Ahora, con la capacidad de ejecutar Machine Learning en placas Arduino y para este caso [ESP32](https://www.espressif.com/en/products/socs/esp32), se vuelve esencial, especialmente en dispositivos con recursos limitados como en nuestro caso. En un proyecto de clasificación de gestos, la alta dimensionalidad de las características impedía la instalación de la mayoría de los clasificadores en algunas tarjetas como puede ser la **MCU8266**. Se explorara la reducción de dimensionalidad como método puede llegar a superar este desafío. 
 
-Una vez compilado el proyecto se tomaran los archivos correspondientes a la carpeta /.pio/libdeps, donde se encontrara con la carpeta "hello_world". Copie los elementos del hello_world.ino a su carpeta raiz /src, a su archivo main.cpp. 
+Se optará por comenzar con PCA (Análisis de Componentes Principales) entre los numerosos algoritmos disponibles para la reducción de dimensionalidad, dada su amplia utilización.  Para el ejemplo se hará uso del paquete Python micromlgen, se le recomienda leer la documentación de __git__ de introducción para familiarizarse con él. Es importante recordar instalar siempre la última versión, ya que se publican actualizaciones frecuentes. A continuación se encuentra del repositorio:
 
-Despues de la inclusión de "Arduino.h". Seguido a esto copie todos los archivos headers (.h) y cpp que encuentre en la carpeta, asegurando de esta manera la siguiente estructura de carpetas:
 ```
--a----     30/05/2022  12:33 a. m.           1573 constants copy.h
--a----     30/05/2022  12:33 a. m.            791 constants.cpp
--a----     30/05/2022  12:33 a. m.           1573 constants.h
--a----     22/01/2024  10:09 a. m.           4171 main.cpp
--a----     30/05/2022  12:33 a. m.              1 main_functions.h
--a----     30/05/2022  12:33 a. m.          16969 model.cpp
--a----     30/05/2022  12:33 a. m.           1295 model.h
--a----     30/05/2022  12:33 a. m.           1020 output_handler.cpp
--a----     30/05/2022  12:33 a. m.           1161 output_handler.h
+https://github.com/eloquentarduino/micromlgen.git
+```
+Para instalar el paquete ejecute:
+```
+pip install --upgrade micromlgen
+```
+Ahora, convertir un transformador PCA de sklearn a C simple se ha vuelto sencillo utilizando el puerto del método mágico. Además de la conversión de clasificadores SVM/RVM, micromlgen también permite exportar PCA. A continuación veremos el siguiente ejemplo:
+
+```
+from sklearn.decomposition import PCA
+from sklearn.datasets import load_iris
+from micromlgen import port
+
+if __name__ == '__main__':
+    X = load_iris().data
+    pca = PCA(n_components=2, whiten=False).fit(X)
+
+    print(port(pca))
+```
+## PCA en C
+Para utilizar el código exportado, primero debemos incluirlo en nuestro boceto. Guarde el contenido en un archivo (lo llamé pca.h) en la misma carpeta de su proyecto .cpp de PlatformIO e inclúyalo.
+```
+#include "pca.h"
+
+// this was trained on the IRIS dataset, with 2 principal components
+Eloquent::ML::Port::PCA pca;
+```
+El objeto pca ahora puede tomar una matriz de tamaño N como entrada y devolver una matriz de tamaño K como salida, normalmente con K < N.
+```
+void setup() {
+    float x_input[4] = {5.1, 3.5, 1.4, 0.2};
+    float x_output[2];
+
+    pca.transform(x_input, x_output);
+}
+```
+Eso es todo: ahora puedes ejecutar tu clasificador en x_output.
+```
+#include "pca.h"
+#include "svm.h"
+
+Eloquent::ML::Port::PCA pca;
+Eloquent::ML::Port::SVM clf;
+
+void setup() {
+    float x_input[4] = {5.1, 3.5, 1.4, 0.2};
+    float x_output[2];
+    int y_pred;
+
+    pca.transform(x_input, x_output);
+
+    y_pred = clf.predict(x_output);
+}
 ```
 
-## Reconocimiento
 
-Para este caso el modelo que exportamos desde nuestro ejemplo desarrollador en colab, podemos hacer uso de este ingresandolo en la variable:
-```
-alignas(8) const  unsigned  char g_model[] =
-```
-O creando una nueva e importandola desde los demás archivos, teniendo en cuenta que son los posibles valores del seno reemplazandolo por el dispuesto en la carpeta creada.
-
-## Experimentar
-
-La gestión de archivos del ejemplo se realiza para tener una forma estructurada de hacer la lectura del modelo de tal forma que se pueda tener varios de estos, en el caso de solo estar interesado en utilizar 1 modelo, puede importarlo directamente desde el archivo main.cpp. 
-
-## Salida
-La posible salida del sistema es la siguiente los calculos asociados a la aproximación del seno.
-```
-x_value: 1.2566366*2^1, y_value: 1.0674761*2^-1
-```
-## Archivo
-Si es necesario el proyecto se encuentra en la carpeta **test_PF**, importelo de ser necesario desde platformIO. 
+### Referencia
+[1] https://eloquentarduino.github.io/2020/06/arduino-dimensionality-reduction-pca-for-machine-learning-projects/

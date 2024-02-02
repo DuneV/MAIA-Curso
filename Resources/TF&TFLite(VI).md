@@ -1,0 +1,5 @@
+# TensorFlow
+TensorFlow es una biblioteca de código abierto desarrollada por Google para realizar tareas de aprendizaje automático y construir modelos de inteligencia artificial. Ofrece una amplia gama de herramientas y recursos para la creación, entrenamiento y despliegue de modelos de aprendizaje profundo. TensorFlow es versátil y es utilizado en diversos campos, desde la visión por computadora hasta el procesamiento del lenguaje natural.
+
+# TensorFlow Lite
+TensorFlow Lite es una versión ligera de TensorFlow diseñada específicamente para dispositivos móviles y sistemas integrados con recursos limitados. Permite ejecutar modelos de aprendizaje automático en dispositivos como teléfonos móviles, microcontroladores y dispositivos IoT. TensorFlow Lite optimiza los modelos para un rendimiento eficiente y una baja huella de memoria, lo que es esencial para aplicaciones en dispositivos con restricciones de recursos.
