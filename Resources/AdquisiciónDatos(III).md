@@ -1,15 +1,45 @@
-# Tratamiento de datos
+# Adquisición de Datos
 
-El tratamiento de datos hace parte fundamental de la migración de sistemas basados en ML a embebidos. Aún más cuando la optimización y ahorro de memoria se convierten en fundamentos claves para la migración de estos interpretadores. Ahora bien, para el tratamiento se han propuesto 4 ejes aplicables en los modelos de tiny ML, necesarios para la mejora y recreación de resultados en la ESP32.
+Para el proyecto se dispone la evaluación de gestos basado en la posible interpretación de ya sea lenguaje de señas o movimientos naturales asociados a un cambio en las aceleraciones de la mano o el cuerpo. Para esto usaremos un sensor acelerometro del tipo MPU6050, visto a continuación:
+<center><img src="images/imu.jpg" alt="drawing" width="200"/>
+</center> 
 
-1. **PCA (Análisis de Componentes Principales):**
-   - PCA es una técnica de análisis multivariante que se utiliza para simplificar la complejidad en conjuntos de datos de alta dimensionalidad. Su objetivo principal es transformar los datos originales en un nuevo conjunto de variables no correlacionadas llamadas componentes principales. Estos componentes capturan la mayor varianza en los datos, lo que permite reducir la dimensionalidad manteniendo la información más importante.
+Este por medio del protocolo $i^{2}C$ se comunicara con nuestro microcontrolador ESP32, por medio de las siguientes conexiones:
+<center><img src="images/conexiones.png" alt="drawing" width="200"/>
+</center> 
 
-2. **Adquisición FFT (Transformada Rápida de Fourier):**
-   - La Transformada Rápida de Fourier (FFT) es un algoritmo eficiente para calcular la transformada de Fourier discreta de una secuencia de datos. En el contexto de adquisición de datos, la FFT se utiliza comúnmente para analizar las componentes de frecuencia en una señal. Convierte una señal desde el dominio del tiempo al dominio de la frecuencia.
+- Esta configuración puede cambiar dependiendo de la distribución de la tarjeta usada.
+(revisar conexiones GND - ground y VCC - 3.3v)
 
-3. **KALMAN vs Complementario:**
-   - KALMAN y el filtro complementario son dos enfoques diferentes para la fusión de datos en sistemas de sensores. El filtro de Kalman es un algoritmo de estimación que utiliza mediciones pasadas y presentes para predecir el estado futuro de un sistema. El filtro complementario combina información de diferentes sensores de una manera ponderada para mejorar la precisión y la robustez de las estimaciones.
+# Recolección
 
-4. **Reconocimiento de ventana de muestreo:**
-   - El reconocimiento de ventana de muestreo se refiere al proceso de identificar y utilizar ventanas específicas de datos para el análisis o procesamiento. En el contexto del muestreo de señales, las ventanas se aplican para limitar la duración de la señal considerada en un instante dado, lo que puede ser crucial para aplicaciones como el procesamiento de señales en tiempo real.
+Para recolectar los datos asociados se puede hacer uso del archivo presente en la carpeta de Arduino llamado imu_collector.ino, de igual manera puede correrlo en platformIO, agregando las siguientes dependencias a su archivo .ini:
+
+```
+lib_deps = https://github.com/adafruit/Adafruit_BusIO.git
+           https://github.com/adafruit/Adafruit_MPU6050.git
+           https://github.com/adafruit/Adafruit_Sensor.git
+```
+
+Para la lectura correcta de los datos, para esto no abra la consola ni de platformIO, ni de ArduinoIDE (ya que esto bloqueara la comunicación serial).
+- Ahora para realizar esta lectura abra y corra el archivo en la carpeta de Python llamada ***data_collector.py***, este se encargara de leer los datos del sensor y guardarlos en un archivo ***.csv***, desde el momento de su activación.
+
+Esto le guardara un archivo con el siguiente encabezado:
+```
+'Accel x (m/s^2)', 'Accel y (m/s^2)', 'Accel z (m/s^2)', 'w_x (rad/s)', 'w_y (rad/s)', 'w_z (rad/s)', 'Temp (°C)'
+```
+Recuerde que estos datos son vitales para el reconocimiento de gestos por parte del brazo para eso se recomienda usar un modelo como soporte para el brazo o en forma de pulsera como se enseña a continuación:
+<center><img src="images/mpu_holder.PNG" alt="drawing" width="200"/>
+</center> 
+
+## Experimentación
+
+Ahora se le solicita que grabe dos o más gestos de su agrado para ser reconocidos, donde será de vital importancia que tenga en cuenta la frecuencia de muestreo dada por
+$$
+f = \frac{1}{T_{s}}
+$$
+Donde $T_{s}$ es el valor de la espera en bucle y estará dada por $\frac{x}{1000}$ ya que el delay esta dado en $\mu s$. 
+
+## Evaluación
+
+Una vez tomados estos datos realice la evaluación de los mismos con los siguientes pasos.
