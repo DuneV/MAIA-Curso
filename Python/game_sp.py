@@ -1,8 +1,4 @@
 from ursina import *
-import serial 
-
-#esp32 = serial.Serial(port='COM4', baudrate=115200, timeout=.1) 
-
 
 class LaberintoJuego(Entity):
     def __init__(self, size, maze):
@@ -37,13 +33,13 @@ class Player(Entity):
             model='sphere',
             color=color.orange,
             scale=0.5,
-            position=(0, 5, 0),  # Ajustar la posición inicial para evitar colisiones inmediatas
+            position=(0, 5, 0),
             collider='sphere',
-            origin_y=-0.5  # Ajustar el origen para que la esfera ruede correctamente
+            origin_y=-0.5
         )
         self.game = game
-        self.gravity = -0.5  # Configurar la gravedad
-        self.y_speed = 0
+        self.gravity = -0.2  # Reducir la gravedad
+        self.y_speed = 0.5  # Reducir la velocidad vertical
 
     def update(self):
         # Aplicar gravedad
@@ -54,19 +50,10 @@ class Player(Entity):
         hit_info = self.intersects()
 
         if hit_info.hit:
-            # print(hit_info.point.y)
             self.y = hit_info.point.y
             self.y_speed = 0
 
-        # Movimiento con las teclas / esp32
-        def read_port(x): 
-            if esp32.in_waiting:
-                packet = esp32.readline()
-                time.sleep(0.05) 
-                return packet.decode('utf').rstrip('\n')
-            else:
-                return ('WOI')
-        
+        # Movimiento con las teclas
         if held_keys['a'] and self.x > -self.game.size / 2:
             self.x -= 1
         if held_keys['d'] and self.x < self.game.size / 2 - 1:
@@ -99,7 +86,7 @@ class Sphere(Entity):
 # Tamaño del laberinto
 GRID_SIZE = 10
 
-# Definición del laberinto (0 representa espacio libre, 1 representa pared)
+# Definición del laberinto
 laberinto = [
     [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 1, 1, 1, 1, 0, 1, 0],
@@ -116,8 +103,6 @@ laberinto = [
 app = Ursina()
 window.vsync = False
 
-
 laberinto_juego = LaberintoJuego(GRID_SIZE, laberinto)
-# Agregar la cámara de editor para mover la perspectiva con el clic izquierdo
 editor_camera = EditorCamera()
 app.run()
