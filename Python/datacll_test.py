@@ -18,7 +18,7 @@ class esp32Communication:
 def file_treat(data_receive):
     data = np.array(data_receive)
     
-    # Asegurar que el tamaño total sea un múltiplo de 7
+    # Asegurar que el tamaño total sea un múltiplo de 2
     remainder = len(data) % 2
     if remainder != 0:
         data = data[:-remainder]  # Eliminar los elementos extra
